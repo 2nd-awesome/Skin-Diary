@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Skin Diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fefe90; --surface:#FFFFFF; --ink:#1E2B28; --muted:#5E6E6A; --line:#0F0326;
+  --accent:#2F6F63; --accent-ink:#0F1715; --empty:#E3EAE7;
+  --s1:#D64545; --s2:#EA8A3C; --s3:#E3B92E; --s4:#8DBB45; --s5:#35A06A;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#fefe90; --surface:#FFFFFF; --ink:#1E2B28; --muted:#98A8A3; --line:#0F0326;
+    --accent:#7FC4B4; --accent-ink:#0F1715; --empty:#26312E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#fefe90; --surface:#FFFFFF; --ink:#1E2B28; --muted:#98A8A3; --line:#0F0326;
+  --accent:#7FC4B4; --accent-ink:#0F1715; --empty:#26312E;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+h1,h2{font-family:"Young Serif",Georgia,"Times New Roman",serif;font-weight:400;margin:0;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.app{max-width:460px;margin:0 auto;padding:24px 20px 110px;min-height:100%}
+.hidden{display:none !important}
+
+/* Login */
+.login{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:5vh}
+.login h1{font-size:2.2rem}
+.login p{color:var(--muted);margin:8px 0 24px;max-width:300px}
+.field{width:100%;max-width:300px;margin-bottom:16px;text-align:left}
+.field label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:6px}
+.field input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit}
+.primary{width:100%;max-width:300px;padding:13px;border:none;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700}
+.secondary{padding:10px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);font-weight:600}
+.emailchip{display:inline-flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 8px 6px 14px;margin-bottom:18px;font-weight:600;max-width:100%}
+.emailchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.emailchip button{border:none;background:var(--empty);border-radius:999px;padding:2px 10px;font-size:.85rem;font-weight:500}
+.dots{display:flex;gap:16px;justify-content:center;margin:4px 0 8px}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--accent);transition:background .15s}
+.dot.on{background:var(--accent)}
+.err{color:var(--s1);min-height:1.5em;font-size:.95rem;font-weight:500}
+.keypad{display:grid;grid-template-columns:repeat(3,72px);gap:14px;margin-top:10px}
+.key{height:72px;border-radius:50%;border:none;background:var(--surface);font-size:1.6rem;font-weight:500;box-shadow:0 1px 0 var(--line)}
+.key:active{background:var(--empty)}
+.key.ghost{background:transparent;box-shadow:none;font-size:1rem;color:var(--muted)}
+.linkbtn{background:none;border:none;color:var(--muted);text-decoration:underline;margin-top:22px;font-size:.9rem}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* Top bar */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:26px}
+.who{min-width:0}
+.who small{display:block;color:var(--muted);font-size:.8rem}
+.who strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.logout{flex:none;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:7px 16px;font-size:.9rem;font-weight:600}
+
+/* Rate */
+.date{color:var(--muted);margin-bottom:6px}
+.rate h2{font-size:2rem;margin-bottom:26px}
+.stars{display:flex;justify-content:space-between;gap:6px;margin-bottom:10px}
+.star{flex:1;aspect-ratio:1;border:none;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.star svg{width:100%;max-width:64px;height:auto;transition:transform .15s}
+.star svg path{fill:var(--c);opacity:.35;stroke:var(--c);stroke-width:1.5;transition:opacity .15s}
+.star:hover svg path{opacity:.6}
+.star.picked svg path{opacity:1}
+.star.picked svg{transform:scale(1.15)}
+.star span{font-size:.8rem;color:var(--muted);font-weight:600}
+.scale{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:22px}
+.saved{background:var(--surface);border-left:6px solid var(--c,var(--line));border-radius:10px;padding:14px 16px}
+.saved strong{display:block}
+.saved small{color:var(--muted)}
+.note{margin-top:18px}
+.note label{display:block;font-weight:600;margin-bottom:6px}
+.note textarea{width:100%;min-height:96px;resize:vertical;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit}
+.noterow{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:10px}
+.noterow small{color:var(--muted)}
+.quote{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);white-space:pre-wrap;word-wrap:break-word}
+
+/* Calendar */
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}
+.head h2{font-size:1.6rem}
+.nav{display:flex;gap:8px}
+.nav button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:1.1rem}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.wd{text-align:center;font-size:.8rem;color:var(--muted);font-weight:600;padding-bottom:4px}
+.day{aspect-ratio:1;border-radius:10px;border:none;background:var(--empty);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.95rem;position:relative}
+.day.rated{background:var(--c);color:#fff}
+.day.noted::after{content:"";position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.85}
+.day.today{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.day.sel{outline:3px solid var(--accent);outline-offset:1px}
+.day.future{opacity:.4;cursor:default}
+.day.pad{background:transparent;cursor:default}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;font-size:.85rem;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--c);vertical-align:-2px;margin-right:4px}
+.stats{margin-top:12px;color:var(--muted);font-size:.95rem}
+.detail{margin-top:18px}
+
+/* Graph */
+.range{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.range button{border:none;background:none;border-radius:999px;padding:5px 12px;font-size:.85rem;font-weight:600;color:var(--muted)}
+.range button.on{background:var(--accent);color:var(--accent-ink)}
+.chart{background:var(--surface);border-radius:14px;padding:12px 8px 4px;overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto;min-width:300px}
+.chart text{font-family:"Figtree",system-ui,sans-serif;font-size:10px;fill:var(--muted)}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .ln{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;opacity:.55}
+.chart .pt{stroke:var(--surface);stroke-width:2;cursor:pointer}
+.chart .pt.sel{stroke:var(--ink);stroke-width:2.5}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.summary div{background:var(--surface);border-radius:12px;padding:10px 12px}
+.summary b{display:block;font-size:1.3rem;font-family:"Young Serif",Georgia,serif;font-weight:400}
+.summary small{color:var(--muted);font-size:.8rem}
+.empty{color:var(--muted);text-align:center;padding:36px 12px}
+
+/* Tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  display:flex;justify-content:center;gap:6px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+.tab{flex:1;max-width:150px;border:none;background:none;padding:10px 6px;border-radius:12px;font-weight:600;color:var(--muted)}
+.tab.active{background:var(--accent);color:var(--accent-ink)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));max-width:90%;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.92rem;z-index:10}
+button:disabled{opacity:.6;cursor:default}
+@media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- LOGIN -->
+  <section id="login" class="login">
+    <h1>Skin Diary</h1>
+    <p id="loginMsg">Log in with your email to see your skin diary.</p>
+
+    <div id="emailStep" style="width:100%;display:flex;flex-direction:column;align-items:center">
+      <div class="field">
+        <label for="emailInput">Email</label>
+        <input id="emailInput" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="err" id="emailErr" role="alert"></div>
+      <button class="primary" id="continueBtn">Continue</button>
+    </div>
+
+    <div id="pinStep" class="hidden" style="display:flex;flex-direction:column;align-items:center">
+      <div class="emailchip"><span id="chipEmail"></span><button id="changeEmail">Change</button></div>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+      <div class="err" id="err" role="alert"></div>
+      <div class="keypad" id="keypad"></div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <section id="main" class="hidden">
+    <div class="top">
+      <div class="who"><small>Logged in as</small><strong id="whoEmail"></strong></div>
+      <button class="logout" id="logoutBtn">Log out</button>
+    </div>
+
+    <!-- Today -->
+    <div id="rateView" class="rate">
+      <div class="date" id="todayLabel"></div>
+      <h2>How is your skin doing today?</h2>
+      <div class="stars" id="stars" role="radiogroup" aria-label="Skin rating"></div>
+      <div class="scale"><span>Really bad</span><span>Great</span></div>
+      <div class="saved" id="savedBox"></div>
+      <div class="note">
+        <label for="noteInput">Notes for today</label>
+        <textarea id="noteInput" maxlength="1000" placeholder="e.g. Breakout on my chin, tried the new moisturiser, slept badly…"></textarea>
+        <div class="noterow"><small id="noteStatus"></small><button class="secondary" id="saveNote">Save note</button></div>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div id="calView" class="hidden">
+      <div class="head">
+        <h2 id="monthLabel"></h2>
+        <div class="nav">
+          <button id="prevM" aria-label="Previous month">‹</button>
+          <button id="nextM" aria-label="Next month">›</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="legend" id="legend"></div>
+      <div class="stats" id="stats"></div>
+      <div class="detail" id="detail"></div>
+    </div>
+
+    <!-- Graph -->
+    <div id="graphView" class="hidden">
+      <div class="head">
+        <h2>Your skin over time</h2>
+        <div class="range" id="range">
+          <button data-d="7">7d</button><button data-d="30" class="on">30d</button><button data-d="90">90d</button>
+        </div>
+      </div>
+      <div class="chart" id="chart"></div>
+      <div class="summary" id="summary"></div>
+      <div class="detail" id="graphDetail"></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast hidden" id="toast" role="status"></div>
+
+<nav class="tabs hidden" id="tabs">
+  <button class="tab active" data-v="rate">Today</button>
+  <button class="tab" data-v="cal">Calendar</button>
+  <button class="tab" data-v="graph">Graph</button>
+</nav>
+
+<script>
+(function(){
+  const LEVELS = [
+    {n:1, label:"Really bad", c:"var(--s1)"},
+    {n:2, label:"Not great",  c:"var(--s2)"},
+    {n:3, label:"Okay",       c:"var(--s3)"},
+    {n:4, label:"Good",       c:"var(--s4)"},
+    {n:5, label:"Great",      c:"var(--s5)"}
+  ];
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const LS_LAST = "skindiary.lastEmail"; // only remembers the last email typed, for convenience
+  const lsGet = k => { try { return localStorage.getItem(k); } catch(e){ return null; } };
+  const lsSet = (k,v) => { try { localStorage.setItem(k, v); } catch(e){} };
+
+  // ---------- API ----------
+  async function api(path, {method="GET", body} = {}){
+    let res;
+    try{
+      res = await fetch("/api" + path, {
+        method, credentials: "same-origin",
+        headers: body ? {"Content-Type":"application/json"} : undefined,
+        body: body ? JSON.stringify(body) : undefined
+      });
+    }catch(e){ throw new Error("Can't reach the server. Check it's running and try again."); }
+    let data = null; try { data = await res.json(); } catch(e){}
+    if(res.status === 401 && !path.startsWith("/auth/")) sessionEnded();
+    if(!res.ok){ const err = new Error((data && data.error) || "Something went wrong. Try again."); err.status = res.status; throw err; }
+    return data;
+  }
+  let toastTimer;
+  function toast(msg){
+    const t = $("toast"); t.textContent = msg; t.classList.remove("hidden");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.add("hidden"), 4000);
+  }
+
+  let email = null, entries = {};
+
+  // Updates the screen straight away, then saves to the server. Undoes the change if saving fails.
+  async function setEntry(k, patch){
+    const before = entries[k] ? Object.assign({}, entries[k]) : undefined;
+    const cur = Object.assign({}, entries[k] || {}, patch);
+    if(!cur.r && !(cur.note && cur.note.trim())) delete entries[k]; else entries[k] = cur;
+    try{
+      await api("/entries/" + k, {method:"PUT", body:{rating: cur.r || null, note: cur.note || ""}});
+      return true;
+    }catch(err){
+      if(before) entries[k] = before; else delete entries[k];
+      renderAll(); toast("Couldn't save. " + err.message);
+      return false;
+    }
+  }
+
+  // ---------- dates ----------
+  const key = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const fromKey = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y,m-1,d); };
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayKey = key(today);
+  const longDate = d => d.toLocaleDateString(undefined,{weekday:"long", day:"numeric", month:"long"});
+
+  // ---------- login ----------
+  let mode = "login", entry = "", firstPin = null, busy = false;
+  const validEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
+  function showEmailStep(){
+    $("emailStep").classList.remove("hidden");
+    $("pinStep").classList.add("hidden");
+    $("loginMsg").textContent = "Log in with your email to see your skin diary.";
+    $("emailErr").textContent = "";
+    $("emailInput").value = lsGet(LS_LAST) || "";
+    setTimeout(() => $("emailInput").focus(), 50);
+  }
+  function showPinStep(){
+    $("emailStep").classList.add("hidden");
+    $("pinStep").classList.remove("hidden");
+    $("chipEmail").textContent = email;
+    $("loginMsg").textContent =
+      mode === "login"  ? "Enter your 4-digit passcode." :
+      mode === "create" ? "New here! Choose a 4-digit passcode for this email." :
+                          "Enter the same passcode again to confirm.";
+    entry = ""; drawDots();
+  }
+  async function goContinue(){
+    const v = $("emailInput").value.trim().toLowerCase();
+    if(!validEmail(v)){ $("emailErr").textContent = "Enter a valid email, like name@example.com."; return; }
+    $("continueBtn").disabled = true; $("emailErr").textContent = "";
+    try{
+      const {exists} = await api("/auth/check-email", {method:"POST", body:{email: v}});
+      email = v; mode = exists ? "login" : "create"; $("err").textContent = "";
+      showPinStep();
+    }catch(e){ $("emailErr").textContent = e.message; }
+    finally{ $("continueBtn").disabled = false; }
+  }
+  $("continueBtn").onclick = goContinue;
+  $("emailInput").addEventListener("keydown", e => { if(e.key === "Enter") goContinue(); });
+  $("changeEmail").onclick = showEmailStep;
+
+  function drawDots(){
+    $("dots").innerHTML = [0,1,2,3].map(i => '<span class="dot'+(i<entry.length?" on":"")+'"></span>').join("");
+  }
+  function fail(msg){
+    $("err").textContent = msg;
+    const d = $("dots"); d.classList.remove("shake"); void d.offsetWidth; d.classList.add("shake");
+    entry = ""; drawDots();
+  }
+  async function complete(){
+    $("err").textContent = "";
+    const pin = entry;
+    if(mode === "create"){ firstPin = pin; mode = "confirm"; showPinStep(); return; }
+    busy = true;
+    try{
+      if(mode === "confirm"){
+        if(pin !== firstPin){ mode = "create"; showPinStep(); fail("Those didn't match. Choose a passcode again."); return; }
+        const {user} = await api("/auth/register", {method:"POST", body:{email, passcode: pin}});
+        await enterApp(user);
+      } else {
+        const {user} = await api("/auth/login", {method:"POST", body:{email, passcode: pin}});
+        await enterApp(user);
+      }
+    }catch(e){
+      if(mode === "confirm"){ mode = "create"; showPinStep(); }
+      fail(e.message);
+    }finally{ busy = false; }
+  }
+  function press(k){
+    if(busy) return;
+    if(k === "del"){ entry = entry.slice(0,-1); drawDots(); return; }
+    if(entry.length >= 4) return;
+    entry += k; drawDots();
+    if(entry.length === 4) setTimeout(complete, 120);
+  }
+  $("keypad").innerHTML = ["1","2","3","4","5","6","7","8","9","","0","del"].map(k =>
+    k === "" ? "<span></span>" :
+    '<button class="key'+(k==="del"?" ghost":"")+'" data-k="'+k+'" aria-label="'+(k==="del"?"Delete":k)+'">'+(k==="del"?"Delete":k)+'</button>').join("");
+  $("keypad").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if(b) press(b.dataset.k); });
+  document.addEventListener("keydown", e => {
+    if($("pinStep").classList.contains("hidden") || $("login").classList.contains("hidden")) return;
+    if(/^[0-9]$/.test(e.key)) press(e.key);
+    else if(e.key === "Backspace") press("del");
+  });
+
+  async function enterApp(user){
+    email = user.email; lsSet(LS_LAST, email);
+    const data = await api("/entries");
+    entries = {};
+    for(const [k, v] of Object.entries(data.entries || {})) entries[k] = {r: v.rating || undefined, note: v.note || ""};
+    $("login").classList.add("hidden");
+    $("main").classList.remove("hidden");
+    $("tabs").classList.remove("hidden");
+    $("whoEmail").textContent = email;
+    selectedCal = null; selectedGraph = null;
+    showView("rate");
+  }
+  function backToLogin(){
+    entries = {}; email = null;
+    $("main").classList.add("hidden"); $("tabs").classList.add("hidden");
+    $("login").classList.remove("hidden");
+    showEmailStep();
+  }
+  function sessionEnded(){
+    if(!email) return;
+    backToLogin(); toast("Your session has ended. Log in again.");
+  }
+  $("logoutBtn").onclick = async () => {
+    if(noteDirty() && !confirm("You have an unsaved note. Log out anyway?")) return;
+    try{ await api("/auth/logout", {method:"POST"}); }catch(e){}
+    backToLogin();
+  };
+
+  // ---------- today ----------
+  const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z" stroke-linejoin="round"/></svg>';
+  const starRow = (picked, compact) => LEVELS.map(l =>
+    '<button class="star'+(picked===l.n?" picked":"")+'" role="radio" aria-checked="'+(picked===l.n)+'" data-n="'+l.n+'" style="--c:'+l.c+'" aria-label="'+l.n+' – '+l.label+'">'+STAR+(compact?'':'<span>'+l.n+'</span>')+'</button>').join("");
+
+  $("todayLabel").textContent = longDate(today);
+  $("stars").addEventListener("click", e => {
+    const b = e.target.closest(".star"); if(!b) return;
+    setEntry(todayKey, {r: +b.dataset.n}); renderRate(true);
+  });
+  const noteDirty = () => email && !$("rateView").classList.contains("hidden") &&
+    ($("noteInput").value.trim() !== ((entries[todayKey]||{}).note || "").trim());
+  $("noteInput").addEventListener("input", () => { $("noteStatus").textContent = noteDirty() ? "Not saved yet" : ""; });
+  $("saveNote").onclick = async () => {
+    $("noteStatus").textContent = "Saving…";
+    const ok = await setEntry(todayKey, {note: $("noteInput").value.trim()});
+    $("noteStatus").textContent = ok ? "Note saved" : "Not saved yet";
+    renderRate(true);
+  };
+
+  function renderRate(keepStatus){
+    const e = entries[todayKey] || {};
+    $("stars").innerHTML = starRow(e.r);
+    const box = $("savedBox");
+    if(e.r){
+      const l = LEVELS[e.r-1];
+      box.style.setProperty("--c", l.c);
+      box.innerHTML = "<strong>Saved: "+e.r+" – "+l.label+"</strong><small>Tap a different star to change it.</small>";
+    } else {
+      box.style.removeProperty("--c");
+      box.innerHTML = "<small>Tap a star to log today.</small>";
+    }
+    if(document.activeElement !== $("noteInput") && !noteDirty()) $("noteInput").value = e.note || "";
+    if(!keepStatus) $("noteStatus").textContent = e.note ? "Note saved" : "";
+  }
+
+  // ---------- day detail (calendar + graph) ----------
+  function renderDetail(box, k, onChange){
+    if(!k){ box.innerHTML = ""; return; }
+    const e = entries[k] || {};
+    box.innerHTML =
+      '<div class="saved" style="--c:'+(e.r?LEVELS[e.r-1].c:"var(--line)")+'">'+
+        '<strong>'+longDate(fromKey(k))+'</strong>'+
+        '<small>'+(e.r ? e.r+" star"+(e.r>1?"s":"")+" – "+LEVELS[e.r-1].label : "No stars logged for this day.")+'</small>'+
+        '<div class="stars" style="margin:12px 0 0" data-role="edit">'+starRow(e.r, true)+'</div>'+
+        '<div class="note" style="margin-top:12px"><label for="dn_'+k+'">Notes</label>'+
+          '<textarea id="dn_'+k+'" maxlength="1000" placeholder="Add a note for this day…">'+esc(e.note||"")+'</textarea>'+
+          '<div class="noterow"><small data-role="st"></small><button class="secondary" data-role="save">Save note</button></div></div>'+
+      '</div>';
+    box.querySelector('[data-role="edit"]').onclick = ev => {
+      const b = ev.target.closest(".star"); if(!b) return;
+      setEntry(k, {r: +b.dataset.n}); onChange();
+    };
+    box.querySelector('[data-role="save"]').onclick = async () => {
+      const st = box.querySelector('[data-role="st"]'); st.textContent = "Saving…";
+      const ok = await setEntry(k, {note: box.querySelector("textarea").value.trim()});
+      onChange();
+      const st2 = box.querySelector('[data-role="st"]'); if(st2) st2.textContent = ok ? "Note saved" : "";
+    };
+  }
+
+  // ---------- calendar ----------
+  let viewMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  let selectedCal = null;
+  $("legend").innerHTML = LEVELS.map(l => '<span style="--c:'+l.c+'"><i></i>'+l.n+' '+l.label+'</span>').join("") + '<span>• has a note</span>';
+  $("prevM").onclick = () => { viewMonth.setMonth(viewMonth.getMonth()-1); selectedCal=null; renderCal(); };
+  $("nextM").onclick = () => { viewMonth.setMonth(viewMonth.getMonth()+1); selectedCal=null; renderCal(); };
+
+  function renderCal(){
+    const y = viewMonth.getFullYear(), m = viewMonth.getMonth();
+    $("monthLabel").textContent = viewMonth.toLocaleDateString(undefined,{month:"long", year:"numeric"});
+    const firstDow = (new Date(y,m,1).getDay()+6)%7;
+    const days = new Date(y,m+1,0).getDate();
+    let html = ["Mo","Tu","We","Th","Fr","Sa","Su"].map(d=>'<div class="wd">'+d+'</div>').join("");
+    for(let i=0;i<firstDow;i++) html += '<div class="day pad"></div>';
+    let sum=0,count=0;
+    for(let d=1; d<=days; d++){
+      const dt = new Date(y,m,d), k = key(dt), e = entries[k] || {};
+      const future = dt > today;
+      if(e.r){ sum+=e.r; count++; }
+      html += '<button class="day'+(e.r?" rated":"")+(e.note?" noted":"")+(k===todayKey?" today":"")+(k===selectedCal?" sel":"")+(future?" future":"")+'"'+
+        (e.r?' style="--c:'+LEVELS[e.r-1].c+'"':"")+(future?" disabled":"")+
+        ' data-k="'+k+'" aria-label="'+dt.toLocaleDateString(undefined,{day:"numeric",month:"long"})+(e.r?", "+LEVELS[e.r-1].label:", not logged")+(e.note?", has a note":"")+'">'+d+'</button>';
+    }
+    $("grid").innerHTML = html;
+    $("stats").textContent = count ? count+" day"+(count>1?"s":"")+" logged this month, average "+(sum/count).toFixed(1)+" stars" : "No days logged this month yet.";
+    renderDetail($("detail"), selectedCal, () => { renderCal(); if(selectedCal===todayKey) renderRate(); });
+  }
+  $("grid").addEventListener("click", e => {
+    const b = e.target.closest(".day[data-k]"); if(!b || b.disabled) return;
+    selectedCal = b.dataset.k; renderCal();
+  });
+
+  // ---------- graph ----------
+  let rangeDays = 30, selectedGraph = null;
+  $("range").addEventListener("click", e => {
+    const b = e.target.closest("button"); if(!b) return;
+    rangeDays = +b.dataset.d;
+    document.querySelectorAll("#range button").forEach(x => x.classList.toggle("on", x===b));
+    renderGraph();
+  });
+
+  function renderGraph(){
+    const W=340, H=210, L=26, R=10, T=12, B=28;
+    const start = new Date(today); start.setDate(start.getDate() - (rangeDays-1));
+    const pts = [];
+    for(let i=0;i<rangeDays;i++){
+      const d = new Date(start); d.setDate(start.getDate()+i);
+      const k = key(d), e = entries[k];
+      if(e && e.r) pts.push({i, k, r:e.r, d});
+    }
+    const x = i => L + (i/(rangeDays-1))*(W-L-R);
+    const y = r => T + (5-r)/4*(H-T-B);
+
+    if(!pts.length){
+      $("chart").innerHTML = '<div class="empty">No ratings in the last '+rangeDays+' days yet. Log a day on the Today tab and it will show up here.</div>';
+      $("summary").innerHTML = ""; $("graphDetail").innerHTML = ""; return;
+    }
+
+    let svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Line graph of skin ratings over the last '+rangeDays+' days">';
+    for(let r=1;r<=5;r++){
+      svg += '<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(r)+'" y2="'+y(r)+'"/>';
+      svg += '<circle cx="10" cy="'+y(r)+'" r="5" fill="'+LEVELS[r-1].c+'"/><text x="19" y="'+(y(r)+3.5)+'">'+r+'</text>';
+    }
+    const tickEvery = rangeDays===7 ? 1 : rangeDays===30 ? 7 : 21;
+    for(let i=rangeDays-1;i>=0;i-=tickEvery){
+      const d = new Date(start); d.setDate(start.getDate()+i);
+      const lbl = rangeDays===7 ? d.toLocaleDateString(undefined,{weekday:"short"}) : d.toLocaleDateString(undefined,{day:"numeric",month:"short"});
+      svg += '<text x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle">'+lbl+'</text>';
+    }
+    if(pts.length > 1) svg += '<polyline class="ln" points="'+pts.map(p=>x(p.i)+","+y(p.r)).join(" ")+'"/>';
+    pts.forEach(p => {
+      svg += '<circle class="pt'+(p.k===selectedGraph?" sel":"")+'" data-k="'+p.k+'" cx="'+x(p.i)+'" cy="'+y(p.r)+'" r="'+(rangeDays>30?4.5:6)+'" fill="'+LEVELS[p.r-1].c+'" tabindex="0" role="button" aria-label="'+p.d.toLocaleDateString(undefined,{day:"numeric",month:"long"})+": "+p.r+' stars"/>';
+    });
+    svg += '</svg>';
+    $("chart").innerHTML = svg;
+
+    const avg = pts.reduce((s,p)=>s+p.r,0)/pts.length;
+    const good = pts.filter(p=>p.r>=4).length, bad = pts.filter(p=>p.r<=2).length;
+    $("summary").innerHTML =
+      '<div><b>'+avg.toFixed(1)+'</b><small>average stars</small></div>'+
+      '<div><b>'+good+'</b><small>good days (4–5)</small></div>'+
+      '<div><b>'+bad+'</b><small>bad days (1–2)</small></div>';
+    if(!selectedGraph) $("graphDetail").innerHTML = '<p class="stats">Tap a dot to see that day and its notes.</p>';
+    else renderDetail($("graphDetail"), selectedGraph, () => { renderGraph(); if(selectedGraph===todayKey) renderRate(); });
+  }
+  function pickPoint(t){ const c = t.closest && t.closest(".pt"); if(!c) return; selectedGraph = c.dataset.k; renderGraph(); }
+  $("chart").addEventListener("click", e => pickPoint(e.target));
+  $("chart").addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pickPoint(e.target); } });
+
+  // ---------- tabs ----------
+  let current = "rate";
+  function showView(v){
+    current = v;
+    $("rateView").classList.toggle("hidden", v!=="rate");
+    $("calView").classList.toggle("hidden", v!=="cal");
+    $("graphView").classList.toggle("hidden", v!=="graph");
+    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.v===v));
+    if(v==="rate") renderRate(); else renderAll();
+  }
+  function renderAll(){
+    if(!email) return;
+    if(current==="rate") renderRate(true); else if(current==="cal") renderCal(); else renderGraph();
+  }
+  $("tabs").addEventListener("click", e => {
+    const t = e.target.closest(".tab"); if(!t) return;
+    if(noteDirty() && t.dataset.v !== "rate" && !confirm("You have an unsaved note. Leave without saving?")) return;
+    showView(t.dataset.v);
+  });
+
+  // ---------- start: skip login if the session cookie is still valid ----------
+  api("/auth/me").then(d => enterApp(d.user)).catch(() => showEmailStep());
+})();
+</script>
+</body>
+</html>
